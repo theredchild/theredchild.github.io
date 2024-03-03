@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <script src="https://unpkg.com/thesemetrics"></script>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>
+    
+    CsecCTF IITB Writeup: I hate Assembly &middot; MOHD SAFWAN
+    
+  </title>
+
+  
+
+
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface" />
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/favicon.png" />
+<link rel="shortcut icon" href="/favicon.ico" /> -->
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS"
+    href="/feed.xml" />
+
+  <!-- Additional head bits without overriding original head -->
+<link href="/css/monokai.css" rel="stylesheet">
+</head>
+
+  <body class="post">
+
+    <div id="sidebar">
+  <header>
+    <div class="site-title">
+      <a href="/">
+        
+          <span class="back-arrow icon"><svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0h24v24H0z" fill="none"/>
+  <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+</svg></span>
+        
+        MOHD SAFWAN
+      </a>
+    </div>
+    <p class="lead">This is me in HTML</p>
+  </header>
+  
+  <nav id="sidebar-nav-links">
+  
+    <a class="home-link "
+        href="/">Home</a>
+  
+  
+    <a class="page-link "
+	href="/blog">Blog</a>
+  
+
+  
+
+  
+
+
+  
+    
+  
+
+  
+    
+      <a class="page-link "
+          href="/about.html">About</a>
+    
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+    
+      <a class="page-link "
+          href="/projects.html">Projects</a>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+
+  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+
+  <!-- Optional additional links to insert in sidebar nav -->
+<a class="page-link" href="/Resume.pdf">Resume</a>
+</nav>
+
+  <nav id="sidebar-icon-links">
+  
+  <!-- <a id="subscribe-link"
+    class="icon" title="Subscribe" aria-label="Subscribe"
+    href="/feed.xml">
+    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <circle cx="6.18" cy="17.82" r="2.18"/>
+    <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/>
+</svg>
+  </a> -->
+  
+  
+  
+  
+  
+      
+      
+      
+      <a id="tags-link"
+      class="icon"
+      title="Tags" aria-label="Tags"
+       href="/tags.html">
+       <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </a>
+      
+
+      
+      <a id="search-link"
+      class="icon"
+       title="Search" aria-label="Search"
+       href="/search.html">
+       <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+</svg>
+      </a>
+      
+      
+      <a id="github-link"
+      class="icon" title="Github" aria-label="Github"
+      href="https://github.com/safwankdb">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 28" height="24" width="28"><path d="M12 2c6.625 0 12 5.375 12 12 0 5.297-3.437 9.797-8.203 11.391-0.609 0.109-0.828-0.266-0.828-0.578 0-0.391 0.016-1.687 0.016-3.297 0-1.125-0.375-1.844-0.812-2.219 2.672-0.297 5.484-1.313 5.484-5.922 0-1.313-0.469-2.375-1.234-3.219 0.125-0.313 0.531-1.531-0.125-3.187-1-0.313-3.297 1.234-3.297 1.234-0.953-0.266-1.984-0.406-3-0.406s-2.047 0.141-3 0.406c0 0-2.297-1.547-3.297-1.234-0.656 1.656-0.25 2.875-0.125 3.187-0.766 0.844-1.234 1.906-1.234 3.219 0 4.594 2.797 5.625 5.469 5.922-0.344 0.313-0.656 0.844-0.766 1.609-0.688 0.313-2.438 0.844-3.484-1-0.656-1.141-1.844-1.234-1.844-1.234-1.172-0.016-0.078 0.734-0.078 0.734 0.781 0.359 1.328 1.75 1.328 1.75 0.703 2.141 4.047 1.422 4.047 1.422 0 1 0.016 1.937 0.016 2.234 0 0.313-0.219 0.688-0.828 0.578-4.766-1.594-8.203-6.094-8.203-11.391 0-6.625 5.375-12 12-12zM4.547 19.234c0.031-0.063-0.016-0.141-0.109-0.187-0.094-0.031-0.172-0.016-0.203 0.031-0.031 0.063 0.016 0.141 0.109 0.187 0.078 0.047 0.172 0.031 0.203-0.031zM5.031 19.766c0.063-0.047 0.047-0.156-0.031-0.25-0.078-0.078-0.187-0.109-0.25-0.047-0.063 0.047-0.047 0.156 0.031 0.25 0.078 0.078 0.187 0.109 0.25 0.047zM5.5 20.469c0.078-0.063 0.078-0.187 0-0.297-0.063-0.109-0.187-0.156-0.266-0.094-0.078 0.047-0.078 0.172 0 0.281s0.203 0.156 0.266 0.109zM6.156 21.125c0.063-0.063 0.031-0.203-0.063-0.297-0.109-0.109-0.25-0.125-0.313-0.047-0.078 0.063-0.047 0.203 0.063 0.297 0.109 0.109 0.25 0.125 0.313 0.047zM7.047 21.516c0.031-0.094-0.063-0.203-0.203-0.25-0.125-0.031-0.266 0.016-0.297 0.109s0.063 0.203 0.203 0.234c0.125 0.047 0.266 0 0.297-0.094zM8.031 21.594c0-0.109-0.125-0.187-0.266-0.172-0.141 0-0.25 0.078-0.25 0.172 0 0.109 0.109 0.187 0.266 0.172 0.141 0 0.25-0.078 0.25-0.172zM8.937 21.438c-0.016-0.094-0.141-0.156-0.281-0.141-0.141 0.031-0.234 0.125-0.219 0.234 0.016 0.094 0.141 0.156 0.281 0.125s0.234-0.125 0.219-0.219z"></path>
+</svg>
+
+      </a>
+      <!-- Optional additional links to insert for icons links -->
+<a id="linkedin-link"
+       class="icon"
+       title="Search" aria-label="Search"
+       href="https://www.linkedin.com/in/safwankdb/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+</a>
+  
+</nav>
+
+
+  
+    <span class="site-version">Currently v4.20</span>
+  
+
+  <!-- <p>
+  &copy; 2022.
+  <a href="/LICENSE.md">MIT License.</a>
+</p>
+ -->
+</div>
+
+    <main class="container">
+      <header>
+  <h1 class="post-title">CsecCTF IITB Writeup: I hate Assembly</h1>
+</header>
+<div class="content">
+  <div class="post-meta">
+  <span class="post-date">22 Jun 2020</span>
+  <span class="post-categories">
+    
+  </span>
+</div>
+
+
+  <div class="post-body">
+    <p>The CyberSecurity Club IITB conducts an yearly <a href="https://ctf.cseciitb.in/">CsecCTF</a>. This was also my first CTF. There were many interesting questions but the one we were not able to solve until the final moments was <strong>trig</strong>. Luckily, we were able to hack a solution in the final few hours and won the whole thing (Go team lolwamen!!).</p>
+
+<h2 id="problem">Problem</h2>
+
+<div align="center">
+   <img src="/assets/img/writeup_trig/problem.png" alt="Test Image" align="center" width="400" />
+</div>
+<p><a href="/downloads/trig">trig binary</a></p>
+
+<h2 id="initial-analysis">Initial Analysis</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>file trig 
+trig: ELF 32-bit LSB executable, Intel 80386, version 1 <span class="o">(</span>SYSV<span class="o">)</span>, dynamically linked, interpreter /lib/ld-, BuildID[sha1]<span class="o">=</span>be9f9521d9010aa32e53457121ba102647593600, stripped
+</code></pre></div></div>
+
+<p>Looks like an x86 executable. Let’s disassemble and see what’s inside.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>objdump <span class="nt">-d</span> trig
+
+trig:     file format elf32-i386
+
+Disassembly of section .text:
+
+0804814f &lt;.text&gt;:
+ 804814f:	58                   	pop    %eax
+ 8048150:	58                   	pop    %eax
+ 8048151:	5c                   	pop    %esp
+ 8048152:	db 44 24 0c          	fildl  0xc<span class="o">(</span>%esp<span class="o">)</span>
+ 8048156:	61                   	popa   
+ 8048157:	68 00 ff 3f 00       	push   <span class="nv">$0x3fff00</span>
+ 804815c:	50                   	push   %eax
+ 804815d:	68 80 80 80 80       	push   <span class="nv">$0x80808080</span>
+ 8048162:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 8048166:	d9 ff                	fcos   
+ 8048168:	89 4c 24 04          	mov    %ecx,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 804816c:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 8048170:	d9 ff                	fcos   
+ 8048172:	89 54 24 04          	mov    %edx,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 8048176:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 804817a:	d9 ff                	fcos   
+ 804817c:	89 5c 24 04          	mov    %ebx,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 8048180:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 8048184:	d9 ff                	fcos   
+ 8048186:	89 6c 24 04          	mov    %ebp,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 804818a:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 804818e:	d9 ff                	fcos   
+ 8048190:	89 74 24 04          	mov    %esi,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 8048194:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 8048198:	d9 ff                	fcos   
+ 804819a:	89 7c 24 04          	mov    %edi,0x4<span class="o">(</span>%esp<span class="o">)</span>
+ 804819e:	<span class="nb">dd </span>44 24 03          	fldl   0x3<span class="o">(</span>%esp<span class="o">)</span>
+ 80481a2:	d9 ff                	fcos   
+ 80481a4:	<span class="nb">dd </span>5c 24 06          	fstpl  0x6<span class="o">(</span>%esp<span class="o">)</span>
+ 80481a8:	<span class="nb">dd </span>5c 24 0c          	fstpl  0xc<span class="o">(</span>%esp<span class="o">)</span>
+ 80481ac:	<span class="nb">dd </span>5c 24 12          	fstpl  0x12<span class="o">(</span>%esp<span class="o">)</span>
+ 80481b0:	<span class="nb">dd </span>5c 24 18          	fstpl  0x18<span class="o">(</span>%esp<span class="o">)</span>
+ 80481b4:	<span class="nb">dd </span>5c 24 1e          	fstpl  0x1e<span class="o">(</span>%esp<span class="o">)</span>
+ 80481b8:	<span class="nb">dd </span>5c 24 24          	fstpl  0x24<span class="o">(</span>%esp<span class="o">)</span>
+ 80481bc:	<span class="nb">dd </span>5c 24 2a          	fstpl  0x2a<span class="o">(</span>%esp<span class="o">)</span>
+ 80481c0:	<span class="nb">dd </span>5c 24 fe          	fstpl  <span class="nt">-0x2</span><span class="o">(</span>%esp<span class="o">)</span>
+ 80481c4:	bb 01 00 00 00       	mov    <span class="nv">$0x1</span>,%ebx
+ 80481c9:	8d 4c 24 <span class="nb">fc          	</span>lea    <span class="nt">-0x4</span><span class="o">(</span>%esp<span class="o">)</span>,%ecx
+ 80481cd:	ba 02 00 00 00       	mov    <span class="nv">$0x2</span>,%edx
+ 80481d2:	bf 30 00 00 00       	mov    <span class="nv">$0x30</span>,%edi
+ 80481d7:	4f                   	dec    %edi
+ 80481d8:	78 1c                	js     0x80481f6
+ 80481da:	8a 04 3c             	mov    <span class="o">(</span>%esp,%edi,1<span class="o">)</span>,%al
+ 80481dd:	c1 e0 04             	shl    <span class="nv">$0x4</span>,%eax
+ 80481e0:	8a 04 3c             	mov    <span class="o">(</span>%esp,%edi,1<span class="o">)</span>,%al
+ 80481e3:	66 25 0f 0f          	and    <span class="nv">$0xf0f</span>,%ax
+ 80481e7:	66 05 61 61          	add    <span class="nv">$0x6161</span>,%ax
+ 80481eb:	50                   	push   %eax
+ 80481ec:	b8 04 00 00 00       	mov    <span class="nv">$0x4</span>,%eax
+ 80481f1:	<span class="nb">cd </span>80                	int    <span class="nv">$0x80</span>
+ 80481f3:	58                   	pop    %eax
+ 80481f4:	eb e1                	jmp    0x80481d7
+ 80481f6:	b8 04 00 00 00       	mov    <span class="nv">$0x4</span>,%eax
+ 80481fb:	ba 01 00 00 00       	mov    <span class="nv">$0x1</span>,%edx
+ 8048200:	6a 0a                	push   <span class="nv">$0xa</span>
+ 8048202:	<span class="nb">cd </span>80                	int    <span class="nv">$0x80</span>
+ 8048204:	58                   	pop    %eax
+ 8048205:	b8 01 00 00 00       	mov    <span class="nv">$0x1</span>,%eax
+ 804820a:	31 db                	xor    %ebx,%ebx
+ 804820c:	<span class="nb">cd </span>80                	int    <span class="nv">$0x80</span>
+</code></pre></div></div>
+
+<p>Notice that there are 7 <code class="language-html highlighter-rouge">fcos</code> ops in the assembly, which is basically an inplace cosine operation. The floating point instructions like <code class="language-html highlighter-rouge">fcos, fldl, fstpl...</code> belong to the <a href="https://www.wikiwand.com/en/X87">x87 instruction set</a>. Also, the binary takes a command line argument and returns a string of fixed length (96).</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>./trig gibberish
+cpefdefhgfbpdphdehmafmpndpbfmlnkbcjedpdhbecjbjdkdppgngeohipeepbamjgpcenfdpcmiagldjonbebnfffbfbae
+</code></pre></div></div>
+
+<p>Now, we can just reverse engineer whats happening by studying the x87 ops and carefully looking at assembly instructions, but who wants to do all that.</p>
+
+<h2 id="ditch-the-assembly">Ditch the assembly</h2>
+
+<p>We’ll explore a different route. We noticed that output stops changing when length of input argument exceeds 32 characters. Also, shifting the argument by a factor of 4 seems to shift some output chars in the opposite direction.</p>
+
+<p>With some trials, we figure out that, an input string <code class="language-html highlighter-rouge">ABCDEFGH</code> (A, B, . . represent a block of 4 characters) is mapped to <code class="language-html highlighter-rouge">f(H)f(G)f(F)f(E)f(C)f(B)f(A)p(D)</code>. Here, \(f(X) \neq  p(X)\) and output of both is 12 characters in length.</p>
+
+<p>This leads us to the conclusion that if we can just find out the mappings \(f, p\) and invert them, we get the flag.</p>
+
+<h2 id="brute-force-attack-">Brute Force Attack :)</h2>
+
+<p>First, we need a wordlist, so we generate one.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">charset</span> <span class="o">=</span> <span class="s">"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!?@_"</span> <span class="o">+</span> <span class="s">'{'</span> <span class="o">+</span> <span class="s">'}'</span>
+<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">charset</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'wordlist.txt'</span><span class="p">,</span> <span class="s">'w'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                    <span class="n">f</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">charset</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">+</span><span class="n">charset</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">+</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p>There are 21381376 words, this’ll take some time.</p>
+
+<p>Second, we need to find the output for each of these words and check for a match in our given output. In 1 call to the executable, we can get outputs for 7 4-char blocks. Running the binary from C++ or Python is easy, but if you also read stdout, it costs time. So, I just write the output in a new file for reading it later because I couldn’t find the C++ way to read stdout without the slow <code class="language-html highlighter-rouge">Popen()</code>.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="cp">#include &lt;bits/stdc++.h&gt;
+</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="cm">/*
+Template: ggggffffeeeexxxxddddccccbbbbaaaa
+*/</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">19545240</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">words</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+    <span class="n">string</span> <span class="n">line</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">cmd</span><span class="p">;</span>
+    <span class="n">string</span> <span class="n">base_cmd</span> <span class="o">=</span> <span class="s">"./trig "</span><span class="p">;</span>
+    <span class="n">ifstream</span> <span class="n">wordfile</span><span class="p">;</span>
+    <span class="n">wordfile</span><span class="p">.</span><span class="n">open</span><span class="p">(</span><span class="s">"words.txt"</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="mi">7</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">words</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="s">"xxxx"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">getline</span><span class="p">(</span><span class="n">wordfile</span><span class="p">,</span> <span class="n">words</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="n">words</span><span class="p">[</span><span class="mi">7</span> <span class="o">-</span> <span class="n">j</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">base_cmd</span> <span class="o">+</span> <span class="n">line</span> <span class="o">+</span> <span class="s">" &gt;&gt; outputs.txt"</span><span class="p">;</span>
+        <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">command</span> <span class="o">=</span> <span class="n">cmd</span><span class="p">.</span><span class="n">c_str</span><span class="p">();</span>
+        <span class="n">system</span><span class="p">(</span><span class="n">command</span><span class="p">);</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">wordfile</span><span class="p">.</span><span class="n">close</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It takes around 80 minutes to finish on my laptop (Ryzen 5 3550), but still much less than it took me to reverse the assembly.</p>
+
+<h2 id="cleaning-up">Cleaning Up</h2>
+
+<p>Now, we just have to match the outputs to the required outputs and recover the input ezpz.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="s">"ephcmbhkmemndpkagnebjbcbdpcbglelpnfpdpcbokhpdbahdpfpdjboemeodpkehfphfbhcdpfmpmbpifdkbeimmdpkjjai"</span>
+<span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">output</span><span class="p">[</span><span class="mi">12</span><span class="o">*</span><span class="n">i</span><span class="p">:</span><span class="mi">12</span><span class="o">*</span><span class="n">i</span><span class="o">+</span><span class="mi">12</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)]</span>
+
+<span class="n">lines</span> <span class="o">=</span> <span class="mi">2792177</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'words.txt'</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">readlines</span><span class="p">()</span>
+
+<span class="n">lookup</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">'outputs.txt'</span><span class="p">,</span> <span class="s">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">lines</span><span class="p">)):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">12</span><span class="p">:</span><span class="n">i</span><span class="o">*</span><span class="mi">12</span><span class="o">+</span><span class="mi">12</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">7</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+                <span class="n">lookup</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="mi">7</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="n">i</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">s</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="mi">7</span><span class="o">*</span><span class="n">l</span><span class="o">+</span><span class="n">i</span><span class="p">)</span>
+
+<span class="n">flag</span> <span class="o">=</span> <span class="s">''</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">flag</span> <span class="o">+=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="nv">$ </span>python3 match.py 
+100%|██████████████████████████████████| 2792177/2792177 <span class="o">[</span>00:08&amp;lt<span class="p">;</span>00:00, 313834.23it/s]
+CsecIITB<span class="o">{</span>H0pu_l34rn3d_R1ght<span class="o">}</span>
+</code></pre></div></div>
+
+<p>But, this is not the flag. That’s because we only found the mapping \(f\). Finding \(p\) would have taken 7 times longer. We know we are missing a 4-char block, we know the position too. We can make some educated guesses for the missing block, it’s not that hard.</p>
+
+<h2 id="flag">Flag</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="syntax"><code>CsecIITB{H0p3_y0u_l34rn3d_R1ght}
+</code></pre></div></div>
+
+<p>See, assembly is overrated. Warm up your processors instead.</p>
+
+    
+
+
+
+<div class="post-tags">
+  
+    
+    <a href="/tags.html#reverse-engineering">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">reverse-engineering,</span>
+    </a>
+  
+    
+    <a href="/tags.html#ctf">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">ctf</span>
+    </a>
+  
+</div>
+  </div>
+
+  
+  <section class="comments">
+    <h2>Comments</h2>
+    
+  <div id="disqus_thread">
+    <button class="disqus-load" onClick="loadDisqusComments()">
+      Load Comments
+    </button>
+  </div>
+  <script>
+
+  /**
+  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW
+  *  TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT:s
+  *  https://disqus.com/admin/universalcode/#configuration-variables
+  */
+  var disqus_config = function () {
+    this.page.url = "http://localhost:4000/2020/06/22/trig-writeup.html";
+    this.page.identifier = "" ||
+                           "http://localhost:4000/2020/06/22/trig-writeup.html";
+  }
+  function loadDisqusComments() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//safwankdb.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  </script>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus</a>.
+  </noscript>
+
+
+
+  </section>
+
+  <section class="related">
+  <h2>Related Posts</h2>
+  <ul class="posts-list">
+    
+      <li>
+        <h3>
+          <a href="/2021/12/10/binary-lifting.html">
+            Binary Lifting with C++
+            <small>10 Dec 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2021/02/01/seam-carving.html">
+            Content-Aware Image Resizing with Julia
+            <small>01 Feb 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2020/04/20/mrf_denoising.html">
+            Image Denoising with Markov Random Fields
+            <small>20 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</section>
+
+</div>
+
+    </main>
+
+    <!-- Optional footer content -->
+
+  </body>
+</html>

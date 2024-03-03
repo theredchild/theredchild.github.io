@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+  <head>
+  <link href="https://gmpg.org/xfn/11" rel="profile" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <script type="text/javascript" async src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+  <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+  </script>
+
+  <script src="https://unpkg.com/thesemetrics"></script>
+
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+  <!-- Enable responsiveness on mobile devices-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+
+  <title>
+    
+    Content-Aware Image Resizing with Julia &middot; MOHD SAFWAN
+    
+  </title>
+
+  
+
+
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/assets/css/main.css" />
+  
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abril+Fatface" />
+
+  <!-- Icons -->
+  <!-- <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/favicon.png" />
+<link rel="shortcut icon" href="/favicon.ico" /> -->
+
+  <!-- RSS -->
+  <link rel="alternate" type="application/rss+xml" title="RSS"
+    href="/feed.xml" />
+
+  <!-- Additional head bits without overriding original head -->
+<link href="/css/monokai.css" rel="stylesheet">
+</head>
+
+  <body class="post">
+
+    <div id="sidebar">
+  <header>
+    <div class="site-title">
+      <a href="/">
+        
+          <span class="back-arrow icon"><svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0 0h24v24H0z" fill="none"/>
+  <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+</svg></span>
+        
+        MOHD SAFWAN
+      </a>
+    </div>
+    <p class="lead">This is me in HTML</p>
+  </header>
+  
+  <nav id="sidebar-nav-links">
+  
+    <a class="home-link "
+        href="/">Home</a>
+  
+  
+    <a class="page-link "
+	href="/blog">Blog</a>
+  
+
+  
+
+  
+
+
+  
+    
+  
+
+  
+    
+      <a class="page-link "
+          href="/about.html">About</a>
+    
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+    
+      <a class="page-link "
+          href="/projects.html">Projects</a>
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+
+  
+
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+    
+  
+
+  
+
+
+  <!-- Optional additional links to insert in sidebar nav -->
+<a class="page-link" href="/Resume.pdf">Resume</a>
+</nav>
+
+  <nav id="sidebar-icon-links">
+  
+  <!-- <a id="subscribe-link"
+    class="icon" title="Subscribe" aria-label="Subscribe"
+    href="/feed.xml">
+    <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <circle cx="6.18" cy="17.82" r="2.18"/>
+    <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/>
+</svg>
+  </a> -->
+  
+  
+  
+  
+  
+      
+      
+      
+      <a id="tags-link"
+      class="icon"
+      title="Tags" aria-label="Tags"
+       href="/tags.html">
+       <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </a>
+      
+
+      
+      <a id="search-link"
+      class="icon"
+       title="Search" aria-label="Search"
+       href="/search.html">
+       <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+    <path d="M0 0h24v24H0z" fill="none"/>
+</svg>
+      </a>
+      
+      
+      <a id="github-link"
+      class="icon" title="Github" aria-label="Github"
+      href="https://github.com/safwankdb">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 28" height="24" width="28"><path d="M12 2c6.625 0 12 5.375 12 12 0 5.297-3.437 9.797-8.203 11.391-0.609 0.109-0.828-0.266-0.828-0.578 0-0.391 0.016-1.687 0.016-3.297 0-1.125-0.375-1.844-0.812-2.219 2.672-0.297 5.484-1.313 5.484-5.922 0-1.313-0.469-2.375-1.234-3.219 0.125-0.313 0.531-1.531-0.125-3.187-1-0.313-3.297 1.234-3.297 1.234-0.953-0.266-1.984-0.406-3-0.406s-2.047 0.141-3 0.406c0 0-2.297-1.547-3.297-1.234-0.656 1.656-0.25 2.875-0.125 3.187-0.766 0.844-1.234 1.906-1.234 3.219 0 4.594 2.797 5.625 5.469 5.922-0.344 0.313-0.656 0.844-0.766 1.609-0.688 0.313-2.438 0.844-3.484-1-0.656-1.141-1.844-1.234-1.844-1.234-1.172-0.016-0.078 0.734-0.078 0.734 0.781 0.359 1.328 1.75 1.328 1.75 0.703 2.141 4.047 1.422 4.047 1.422 0 1 0.016 1.937 0.016 2.234 0 0.313-0.219 0.688-0.828 0.578-4.766-1.594-8.203-6.094-8.203-11.391 0-6.625 5.375-12 12-12zM4.547 19.234c0.031-0.063-0.016-0.141-0.109-0.187-0.094-0.031-0.172-0.016-0.203 0.031-0.031 0.063 0.016 0.141 0.109 0.187 0.078 0.047 0.172 0.031 0.203-0.031zM5.031 19.766c0.063-0.047 0.047-0.156-0.031-0.25-0.078-0.078-0.187-0.109-0.25-0.047-0.063 0.047-0.047 0.156 0.031 0.25 0.078 0.078 0.187 0.109 0.25 0.047zM5.5 20.469c0.078-0.063 0.078-0.187 0-0.297-0.063-0.109-0.187-0.156-0.266-0.094-0.078 0.047-0.078 0.172 0 0.281s0.203 0.156 0.266 0.109zM6.156 21.125c0.063-0.063 0.031-0.203-0.063-0.297-0.109-0.109-0.25-0.125-0.313-0.047-0.078 0.063-0.047 0.203 0.063 0.297 0.109 0.109 0.25 0.125 0.313 0.047zM7.047 21.516c0.031-0.094-0.063-0.203-0.203-0.25-0.125-0.031-0.266 0.016-0.297 0.109s0.063 0.203 0.203 0.234c0.125 0.047 0.266 0 0.297-0.094zM8.031 21.594c0-0.109-0.125-0.187-0.266-0.172-0.141 0-0.25 0.078-0.25 0.172 0 0.109 0.109 0.187 0.266 0.172 0.141 0 0.25-0.078 0.25-0.172zM8.937 21.438c-0.016-0.094-0.141-0.156-0.281-0.141-0.141 0.031-0.234 0.125-0.219 0.234 0.016 0.094 0.141 0.156 0.281 0.125s0.234-0.125 0.219-0.219z"></path>
+</svg>
+
+      </a>
+      <!-- Optional additional links to insert for icons links -->
+<a id="linkedin-link"
+       class="icon"
+       title="Search" aria-label="Search"
+       href="https://www.linkedin.com/in/safwankdb/">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
+</a>
+  
+</nav>
+
+
+  
+    <span class="site-version">Currently v4.20</span>
+  
+
+  <!-- <p>
+  &copy; 2022.
+  <a href="/LICENSE.md">MIT License.</a>
+</p>
+ -->
+</div>
+
+    <main class="container">
+      <header>
+  <h1 class="post-title">Content-Aware Image Resizing with Julia</h1>
+</header>
+<div class="content">
+  <div class="post-meta">
+  <span class="post-date">01 Feb 2021</span>
+  <span class="post-categories">
+    
+  </span>
+</div>
+
+
+  <div class="post-body">
+    <p>I am going to implement the basic <strong>Seam Carving</strong> algorithm in <strong>Julia</strong>. This method shows the usefulness of dynamic programming.</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">using</span> <span class="n">Images</span><span class="x">,</span> <span class="n">ImageFiltering</span>
+
+<span class="n">download</span><span class="x">(</span><span class="s">"https://upload.wikimedia.org/wikipedia/commons/c/cb/Broadway_tower_edit.jpg"</span><span class="x">,</span> <span class="s">"test.jpg"</span><span class="x">);</span>
+</code></pre></div></div>
+
+<div align="center">
+   <img src="/assets/img/seam_carving/1.png" align="center" />
+</div>
+
+<p>Use Sobel filters to compute the gradient of the image.</p>
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_energy</span><span class="x">(</span><span class="n">img</span><span class="x">)</span>
+	<span class="n">∇y</span> <span class="o">=</span> <span class="n">luminance</span><span class="o">.</span><span class="x">(</span><span class="n">imfilter</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">Kernel</span><span class="o">.</span><span class="n">sobel</span><span class="x">()[</span><span class="mi">1</span><span class="x">]))</span>
+	<span class="n">∇x</span> <span class="o">=</span> <span class="n">luminance</span><span class="o">.</span><span class="x">(</span><span class="n">imfilter</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">Kernel</span><span class="o">.</span><span class="n">sobel</span><span class="x">()[</span><span class="mi">2</span><span class="x">]))</span>
+	<span class="n">energy</span> <span class="o">=</span> <span class="n">sqrt</span><span class="o">.</span><span class="x">(</span><span class="n">∇x</span><span class="o">.^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">∇y</span><span class="o">.^</span><span class="mi">2</span><span class="x">)</span>
+<span class="k">end</span><span class="x">;</span>
+</code></pre></div></div>
+<div align="center">
+   <img src="/assets/img/seam_carving/2.png" align="center" />
+</div>
+
+<p>The key idea is that the value of gradient at any pixel corresponds to how ‘valuable’ or ‘important’ to image the object is. This turns out to be a surprisingly good idea for most natural images.</p>
+
+<p>To shrink the width by 1 pixel, we find a set of connected pixels (one in each row) such that the sum of their gradients or ‘energy’ as the authors of the paper called it, is minimized. Such a set is called a <strong>seam</strong>.</p>
+
+<p>The least energy seam can be found in \(\mathcal{O}(HW)\) time for an \(H\times W\) resolution image given its gradients. The algorithm uses dynamic programming to achieve this. Starting from the bottom row, we can use the following recursion to compute the minimum possible energy for a seam originating at each pixel and going down. If \(E(x,y)\) represents this value at pixel \((x,y)\), then</p>
+
+\[M(x,y) = \min \{M(x-1,y-1),M(x,y-1),M(x+1,y-1)\}\]
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_min_cost</span><span class="x">(</span><span class="n">energy</span><span class="x">)</span>
+	<span class="n">min_cost</span> <span class="o">=</span> <span class="n">copy</span><span class="x">(</span><span class="n">energy</span><span class="x">);</span>	
+	<span class="n">h</span><span class="x">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">size</span><span class="x">(</span><span class="n">energy</span><span class="x">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">h</span><span class="o">-</span><span class="mi">1</span><span class="o">:-</span><span class="mi">1</span><span class="o">:</span><span class="mi">1</span><span class="x">,</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">w</span>
+		<span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="x">])</span>
+		<span class="k">elseif</span> <span class="n">j</span> <span class="o">==</span> <span class="n">w</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">w</span><span class="x">])</span>
+		<span class="k">else</span>
+			<span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="x">]</span> <span class="o">+=</span> <span class="n">minimum</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="x">,</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="x">])</span>
+		<span class="k">end</span>
+	<span class="k">end</span>
+	<span class="k">return</span> <span class="n">min_cost</span>
+<span class="k">end</span><span class="x">;</span>
+</code></pre></div></div>
+<p>Next, we use the precomputed values to find the required seam line by traversing down from the minima on the top row. At each step, choose the neighbor with the least cost.</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> get_seam</span><span class="x">(</span><span class="n">min_cost</span><span class="x">)</span>
+	<span class="n">h</span><span class="x">,</span><span class="n">w</span> <span class="o">=</span> <span class="n">size</span><span class="x">(</span><span class="n">min_cost</span><span class="x">)</span>
+	<span class="n">min_idx</span> <span class="o">=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="mi">1</span><span class="x">,</span><span class="o">:</span><span class="x">])</span>
+	<span class="n">indices</span> <span class="o">=</span> <span class="x">[</span><span class="n">min_idx</span><span class="x">]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">2</span><span class="o">:</span><span class="n">h</span>
+		<span class="k">if</span> <span class="n">min_idx</span><span class="o">==</span><span class="mi">1</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="mi">2</span><span class="x">])</span> <span class="o">-</span> <span class="mi">1</span>
+		<span class="k">elseif</span> <span class="n">min_idx</span><span class="o">==</span><span class="n">w</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">w</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">w</span><span class="x">])</span> <span class="o">-</span> <span class="mi">2</span>
+		<span class="k">else</span>
+			<span class="n">min_idx</span> <span class="o">+=</span> <span class="n">argmin</span><span class="x">(</span><span class="n">min_cost</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">min_idx</span><span class="o">-</span><span class="mi">1</span><span class="o">:</span><span class="n">min_idx</span><span class="o">+</span><span class="mi">1</span><span class="x">])</span> <span class="o">-</span> <span class="mi">2</span>
+		<span class="k">end</span>
+		<span class="n">push!</span><span class="x">(</span><span class="n">indices</span><span class="x">,</span> <span class="n">min_idx</span><span class="x">)</span>
+	<span class="k">end</span>
+	<span class="k">return</span> <span class="n">indices</span>
+<span class="k">end</span><span class="x">;</span>
+</code></pre></div></div>
+<div align="center">
+   <img src="/assets/img/seam_carving/3.png" align="center" />
+</div>
+
+<p>The cost function has triangular artifacts as expected since a high energy value would propagate up in such contours.</p>
+
+<p>Now we remove the seam pixels and ‘stick’ the parts.</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> cut_seam</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">seam</span><span class="x">)</span>
+	<span class="n">new_img</span> <span class="o">=</span> <span class="n">img</span><span class="x">[</span><span class="o">:</span><span class="x">,</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="o">-</span><span class="mi">1</span><span class="x">]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">size</span><span class="x">(</span><span class="n">img</span><span class="x">)[</span><span class="mi">1</span><span class="x">]</span>
+		<span class="n">j</span> <span class="o">=</span> <span class="n">seam</span><span class="x">[</span><span class="n">i</span><span class="x">]</span>
+		<span class="n">new_img</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="o">:</span><span class="k">end</span><span class="x">]</span> <span class="o">=</span> <span class="n">img</span><span class="x">[</span><span class="n">i</span><span class="x">,</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">:</span><span class="k">end</span><span class="x">]</span>
+	<span class="k">end</span>
+	<span class="n">new_img</span>
+<span class="k">end</span><span class="x">;</span>
+</code></pre></div></div>
+<p>Finally, we can achieve resizing by just repeating the above steps iteratively.</p>
+
+<div class="language-julia highlighter-rouge"><div class="highlight"><pre class="syntax"><code><span class="k">function</span><span class="nf"> shrink_width</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="n">n</span><span class="x">)</span>
+	<span class="n">new_img</span> <span class="o">=</span> <span class="n">copy</span><span class="x">(</span><span class="n">img</span><span class="x">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">:</span><span class="n">n</span>
+		<span class="n">E</span> <span class="o">=</span> <span class="n">get_energy</span><span class="x">(</span><span class="n">new_img</span><span class="x">)</span>
+		<span class="n">cost</span> <span class="o">=</span> <span class="n">get_min_cost</span><span class="x">(</span><span class="n">E</span><span class="x">)</span>
+		<span class="n">seam</span> <span class="o">=</span> <span class="n">get_seam</span><span class="x">(</span><span class="n">cost</span><span class="x">)</span>
+		<span class="n">new_img</span> <span class="o">=</span> <span class="n">cut_seam</span><span class="x">(</span><span class="n">new_img</span><span class="x">,</span> <span class="n">seam</span><span class="x">)</span>
+	<span class="k">end</span>
+	<span class="n">new_img</span>
+<span class="k">end</span><span class="x">;</span>
+
+<span class="n">new_img</span> <span class="o">=</span> <span class="n">shrink_width</span><span class="x">(</span><span class="n">img</span><span class="x">,</span> <span class="mi">400</span><span class="x">)</span>
+</code></pre></div></div>
+
+<div align="center">
+   <img src="/assets/img/seam_carving/1.png" width="700" />
+   <img src="/assets/img/seam_carving/4.png" width="700" />
+</div>
+
+<p>The results speak for themselves! I would be updating this post soon with detailed descriptions of intermediate steps.</p>
+
+    
+
+
+
+<div class="post-tags">
+  
+    
+    <a href="/tags.html#image-processing">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">image-processing,</span>
+    </a>
+  
+    
+    <a href="/tags.html#julia">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">julia,</span>
+    </a>
+  
+    
+    <a href="/tags.html#dynamic-programming">
+    
+      <span class="icon">
+        <svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0h24v24H0z" fill="none"/>
+    <path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/>
+</svg>
+      </span>&nbsp;<span class="tag-name">dynamic-programming</span>
+    </a>
+  
+</div>
+  </div>
+
+  
+  <section class="comments">
+    <h2>Comments</h2>
+    
+  <div id="disqus_thread">
+    <button class="disqus-load" onClick="loadDisqusComments()">
+      Load Comments
+    </button>
+  </div>
+  <script>
+
+  /**
+  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW
+  *  TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT:s
+  *  https://disqus.com/admin/universalcode/#configuration-variables
+  */
+  var disqus_config = function () {
+    this.page.url = "http://localhost:4000/2021/02/01/seam-carving.html";
+    this.page.identifier = "" ||
+                           "http://localhost:4000/2021/02/01/seam-carving.html";
+  }
+  function loadDisqusComments() { // DON'T EDIT BELOW THIS LINE
+    var d = document, s = d.createElement('script');
+    s.src = '//safwankdb.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  }
+  </script>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus</a>.
+  </noscript>
+
+
+
+  </section>
+
+  <section class="related">
+  <h2>Related Posts</h2>
+  <ul class="posts-list">
+    
+      <li>
+        <h3>
+          <a href="/2021/12/10/binary-lifting.html">
+            Binary Lifting with C++
+            <small>10 Dec 2021</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2020/06/22/trig-writeup.html">
+            CsecCTF IITB Writeup: I hate Assembly
+            <small>22 Jun 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2020/04/20/mrf_denoising.html">
+            Image Denoising with Markov Random Fields
+            <small>20 Apr 2020</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
+</section>
+
+</div>
+
+    </main>
+
+    <!-- Optional footer content -->
+
+  </body>
+</html>
