@@ -1,0 +1,22 @@
+/* ===========================================
+   CSS Variables - steipete.me exact color scheme
+   =========================================== */
+
+/* Light theme (default) */
+:root,
+html[data-theme="light"] {
+  --background: #fdfdfd;
+  --foreground: #282728;
+  --accent: #006cac;
+  --muted: #e6e6e6;
+  --border: #ece9e9;
+}
+
+/* Dark theme */
+html[data-theme="dark"] {
+  --background: #212737;
+  --foreground: #eaedf3;
+  --accent: #ff6b01;
+  --muted: rgba(52, 63, 96, 0.75);
+  --border: #ab4b08;
+}

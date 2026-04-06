@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A beginner-friendly introduction to domain adaptation — what it is, why it matters, and core methods explained with equations.">
+  <meta name="author" content="Harsh Pal">
+  <title>Understanding Domain Adaptation | Harsh Pal</title>
+  <link rel="shortcut icon" href="../images/favicon_h/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../toggle-theme.js"></script>
+  <!-- KaTeX for equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+
+  <a class="skip-to-content" href="#main-content">Skip to content</a>
+
+  <!-- ==================== HEADER ==================== -->
+  <header>
+    <div class="nav-container">
+      <div class="top-nav">
+        <a href="../index.html" class="site-title">Harsh Pal</a>
+        <nav>
+          <button class="menu-btn" aria-label="Open Menu" aria-expanded="false">
+            <svg class="menu-icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg class="close-icon hidden" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <ul class="hidden">
+            <li><a href="../posts.html" class="active-nav">Posts</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li>
+              <button id="theme-btn" class="theme-btn" title="Toggle light & dark" aria-label="light">
+                <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <hr class="hr">
+
+  <!-- ==================== ARTICLE ==================== -->
+  <main id="main-content">
+    <article class="post-article">
+
+      <div class="post-header">
+        <h1>Understanding Domain Adaptation</h1>
+        <div class="post-meta">
+          <time datetime="2025-01-25">25 Jan, 2025</time>
+          <span class="reading-time">&#x2022; 8 min read</span>
+        </div>
+      </div>
+
+      <section>
+        <h2>What is Domain Adaptation?</h2>
+        <p>
+          Machine learning models assume that training data and test data come from the same distribution. In practice, this assumption rarely holds. A model trained to classify product reviews from Amazon may perform poorly on Yelp restaurant reviews, even though both tasks involve sentiment analysis. The data distributions differ &mdash; this gap is called <strong>domain shift</strong>.
+        </p>
+        <p>
+          <strong>Domain adaptation</strong> is a family of techniques that help a model trained on a <em>source domain</em> perform well on a different but related <em>target domain</em>. Formally, we have:
+        </p>
+        <ul>
+          <li><strong>Source domain</strong> $\mathcal{D}_S = \{(x_i^s, y_i^s)\}_{i=1}^{n_s}$ &mdash; labelled data we can train on.</li>
+          <li><strong>Target domain</strong> $\mathcal{D}_T = \{x_j^t\}_{j=1}^{n_t}$ &mdash; data from a different distribution, often with few or no labels.</li>
+        </ul>
+        <p>
+          The goal is to learn a model $f$ that minimizes the target risk $\epsilon_T(f) = \mathbb{E}_{(x,y) \sim \mathcal{D}_T}[\ell(f(x), y)]$, even though we primarily have access to labelled data from $\mathcal{D}_S$.
+        </p>
+      </section>
+
+      <section>
+        <h2>Why Does Domain Shift Happen?</h2>
+        <p>Domain shift arises because the joint distribution $P(X, Y)$ changes between domains. This can manifest in several ways:</p>
+        <ul>
+          <li><strong>Covariate shift:</strong> The input distribution changes, $P_S(X) \neq P_T(X)$, but the labelling function stays the same, $P_S(Y|X) = P_T(Y|X)$. Example: training on studio photos, testing on outdoor photos.</li>
+          <li><strong>Label shift:</strong> The class proportions change, $P_S(Y) \neq P_T(Y)$, but the class-conditional input distribution stays the same. Example: a disease becomes more prevalent in a new population.</li>
+          <li><strong>Concept shift:</strong> The relationship between inputs and labels changes, $P_S(Y|X) \neq P_T(Y|X)$. Example: the word "sick" meaning "ill" vs. slang for "cool".</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>The Theory Behind It</h2>
+        <p>
+          Ben-David et al. (2010) provided a foundational bound on target error. For a hypothesis $h$, the target error $\epsilon_T(h)$ is bounded by:
+        </p>
+        <p>
+          $$\epsilon_T(h) \leq \epsilon_S(h) + d_{\mathcal{H}\Delta\mathcal{H}}(\mathcal{D}_S, \mathcal{D}_T) + \lambda^*$$
+        </p>
+        <p>This bound tells us three things:</p>
+        <ol>
+          <li><strong>Source error</strong> $\epsilon_S(h)$: The model should perform well on the source domain.</li>
+          <li><strong>Domain divergence</strong> $d_{\mathcal{H}\Delta\mathcal{H}}$: The distance between the two distributions should be small. This is the term we can actively minimize.</li>
+          <li><strong>Ideal joint error</strong> $\lambda^*$: The error of the ideal hypothesis that works well on both domains. This is a constant &mdash; if the two tasks are fundamentally incompatible, no adaptation method will help.</li>
+        </ol>
+        <p>
+          Most domain adaptation methods focus on minimizing the second term &mdash; making the feature representations of the source and target domains indistinguishable.
+        </p>
+      </section>
+
+      <section>
+        <h2>Core Approaches</h2>
+
+        <h3>1. Discrepancy-Based Methods</h3>
+        <p>
+          These methods explicitly measure and minimize the distance between source and target feature distributions. A popular measure is <strong>Maximum Mean Discrepancy (MMD)</strong>:
+        </p>
+        <p>
+          $$\text{MMD}(\mathcal{D}_S, \mathcal{D}_T) = \left\| \frac{1}{n_s}\sum_{i=1}^{n_s}\phi(x_i^s) - \frac{1}{n_t}\sum_{j=1}^{n_t}\phi(x_j^t) \right\|_{\mathcal{H}}$$
+        </p>
+        <p>
+          where $\phi(\cdot)$ maps samples into a Reproducing Kernel Hilbert Space (RKHS). Intuitively, MMD compares the mean embeddings of two distributions &mdash; if they are close, the distributions are similar. Deep Adaptation Networks (Long et al., 2015) add MMD penalties to the loss function of a deep network, encouraging the learned features to have similar distributions across domains.
+        </p>
+
+        <h3>2. Adversarial Methods</h3>
+        <p>
+          Inspired by GANs, adversarial domain adaptation uses a <strong>domain discriminator</strong> $D$ that tries to distinguish source features from target features, while the feature extractor $G$ tries to fool it. The minimax objective is:
+        </p>
+        <p>
+          $$\min_G \max_D \; \mathbb{E}_{x \sim \mathcal{D}_S}[\log D(G(x))] + \mathbb{E}_{x \sim \mathcal{D}_T}[\log(1 - D(G(x)))]$$
+        </p>
+        <p>
+          When the discriminator can no longer tell the domains apart, the features are domain-invariant. Domain-Adversarial Neural Networks (DANN) by Ganin et al. (2016) implement this elegantly using a <strong>gradient reversal layer</strong> &mdash; during backpropagation, gradients from the discriminator are negated before reaching the feature extractor, which makes standard SGD perform the minimax optimization.
+        </p>
+
+        <h3>3. Self-Training / Pseudo-Labelling</h3>
+        <p>
+          A simpler but effective approach: train on source data, generate pseudo-labels for confident target predictions, then retrain on both. The key is selecting reliable pseudo-labels. Common strategies include confidence thresholding &mdash; keeping only predictions where $\max_c \; P(y = c \mid x) > \tau$ for a threshold $\tau$ &mdash; and curriculum-style methods that gradually include harder examples.
+        </p>
+      </section>
+
+      <section>
+        <h2>Variants of Domain Adaptation</h2>
+        <ul>
+          <li><strong>Unsupervised DA:</strong> No target labels available. This is the most studied and challenging setting.</li>
+          <li><strong>Semi-supervised DA:</strong> A few target labels are available alongside abundant unlabelled target data.</li>
+          <li><strong>Multi-source DA:</strong> Multiple source domains are available, e.g., adapting from both Amazon and Twitter reviews to Yelp.</li>
+          <li><strong>Domain generalization:</strong> No target data at all during training &mdash; the model must generalize to unseen domains purely from diverse source training.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>A Simple Example</h2>
+        <p>
+          Consider digit recognition: you have labelled MNIST digits (clean, centred, black-and-white) and want to classify SVHN digits (colourful, noisy, from street photos). A standard CNN trained on MNIST gets roughly 60% accuracy on SVHN. Adding a DANN-style adversarial loss to align the feature distributions can push this to around 75&ndash;80%, without using a single SVHN label.
+        </p>
+      </section>
+
+      <section>
+        <h2>References</h2>
+        <ol class="references">
+          <li>S. Ben-David, J. Blitzer, K. Crammer, A. Kulesza, F. Pereira, J. W. Vaughan. "A theory of learning from different domains." <em>Machine Learning</em>, 79(1&ndash;2):151&ndash;175, 2010.</li>
+          <li>M. Long, Y. Cao, J. Wang, M. I. Jordan. "Learning Transferable Features with Deep Adaptation Networks." <em>ICML</em>, 2015.</li>
+          <li>Y. Ganin, E. Ustinova, H. Ajakan, P. Germain, H. Larochelle, F. Laviolette, M. Marchand, V. Lempitsky. "Domain-Adversarial Training of Neural Networks." <em>JMLR</em>, 17(1):1&ndash;35, 2016.</li>
+          <li>K. Saito, K. Watanabe, Y. Ushiku, T. Harada. "Maximum Classifier Discrepancy for Unsupervised Domain Adaptation." <em>CVPR</em>, 2018.</li>
+          <li>D. Lee. "Pseudo-Label: The Simple and Efficient Semi-Supervised Learning Method for Deep Neural Networks." <em>ICML Workshop</em>, 2013.</li>
+        </ol>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <hr class="hr">
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-socials">
+        <a href="https://github.com/theredchild/" class="social-icon-btn" target="_blank" rel="noopener" title="GitHub">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="https://scholar.google.com/citations?user=4rHw31gAAAAJ&hl=en" class="social-icon-btn" target="_blank" rel="noopener" title="Google Scholar">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 100 14 7 7 0 000-14z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/harshpal/" class="social-icon-btn" target="_blank" rel="noopener" title="LinkedIn">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="mailto:palharsh.india@gmail.com" class="social-icon-btn" title="Email">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,7 12,13 2,7"/></svg>
+        </a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2025 Harsh Pal
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.menu-btn').addEventListener('click', function () {
+      var ul = this.closest('nav').querySelector('ul');
+      var mi = this.querySelector('.menu-icon');
+      var ci = this.querySelector('.close-icon');
+      var open = ul.classList.contains('open');
+      ul.classList.toggle('open');
+      ul.classList.toggle('hidden');
+      mi.classList.toggle('hidden');
+      ci.classList.toggle('hidden');
+      this.setAttribute('aria-expanded', open ? 'false' : 'true');
+      this.setAttribute('aria-label', open ? 'Open Menu' : 'Close Menu');
+    });
+  </script>
+</body>
+</html>

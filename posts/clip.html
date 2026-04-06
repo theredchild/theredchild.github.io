@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A beginner-friendly explanation of CLIP — how it connects images and text, its contrastive training objective, and why it matters.">
+  <meta name="author" content="Harsh Pal">
+  <title>Why CLIP Changed Everything for Vision-Language Models | Harsh Pal</title>
+  <link rel="shortcut icon" href="../images/favicon_h/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../toggle-theme.js"></script>
+  <!-- KaTeX for equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+
+  <a class="skip-to-content" href="#main-content">Skip to content</a>
+
+  <!-- ==================== HEADER ==================== -->
+  <header>
+    <div class="nav-container">
+      <div class="top-nav">
+        <a href="../index.html" class="site-title">Harsh Pal</a>
+        <nav>
+          <button class="menu-btn" aria-label="Open Menu" aria-expanded="false">
+            <svg class="menu-icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <svg class="close-icon hidden" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <ul class="hidden">
+            <li><a href="../posts.html" class="active-nav">Posts</a></li>
+            <li><a href="../about.html">About</a></li>
+            <li>
+              <button id="theme-btn" class="theme-btn" title="Toggle light & dark" aria-label="light">
+                <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"/></svg>
+                <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              </button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <hr class="hr">
+
+  <!-- ==================== ARTICLE ==================== -->
+  <main id="main-content">
+    <article class="post-article">
+
+      <div class="post-header">
+        <h1>Why CLIP Changed Everything for Vision-Language Models</h1>
+        <div class="post-meta">
+          <time datetime="2024-12-12">12 Dec, 2024</time>
+          <span class="reading-time">&#x2022; 10 min read</span>
+        </div>
+      </div>
+
+      <section>
+        <h2>The Problem Before CLIP</h2>
+        <p>
+          Traditional image classifiers are trained on a fixed set of categories. An ImageNet model learns to distinguish 1,000 classes, and that is all it can ever predict. If you need a new class &mdash; say, "a photo of a traffic cone" &mdash; you have to collect labelled examples and retrain. This is expensive, slow, and does not scale.
+        </p>
+        <p>
+          The fundamental limitation is that vision models and language models lived in separate worlds. Images were mapped to class indices, not to the rich semantic space that language provides. CLIP changed that.
+        </p>
+      </section>
+
+      <section>
+        <h2>What is CLIP?</h2>
+        <p>
+          <strong>CLIP</strong> (Contrastive Language&ndash;Image Pre-training), introduced by Radford et al. (2021) at OpenAI, learns to connect images and text by training on 400 million image&ndash;text pairs scraped from the internet. Instead of predicting a fixed class, CLIP learns a shared embedding space where matching images and captions are close together.
+        </p>
+        <p>CLIP has two encoders:</p>
+        <ul>
+          <li><strong>Image encoder</strong> $f_I$: Takes an image $x$ and produces a vector $\mathbf{v} = f_I(x) \in \mathbb{R}^d$. This can be a ResNet or a Vision Transformer (ViT).</li>
+          <li><strong>Text encoder</strong> $f_T$: Takes a text string $t$ and produces a vector $\mathbf{u} = f_T(t) \in \mathbb{R}^d$. This is a Transformer.</li>
+        </ul>
+        <p>
+          Both vectors live in the same $d$-dimensional space. The similarity between an image and a text is simply the cosine similarity:
+        </p>
+        <p>
+          $$\text{sim}(x, t) = \frac{\mathbf{v} \cdot \mathbf{u}}{\|\mathbf{v}\| \, \|\mathbf{u}\|}$$
+        </p>
+      </section>
+
+      <section>
+        <h2>Contrastive Training Objective</h2>
+        <p>
+          CLIP is trained with a <strong>symmetric contrastive loss</strong>. Given a batch of $N$ image&ndash;text pairs $\{(x_i, t_i)\}_{i=1}^N$, we compute the $N \times N$ matrix of cosine similarities. The diagonal entries are the matching pairs; everything off-diagonal is a negative.
+        </p>
+        <p>
+          For each image $x_i$, the probability that $t_j$ is the correct caption is:
+        </p>
+        <p>
+          $$p_{i \to j} = \frac{\exp(\text{sim}(x_i, t_j) / \tau)}{\sum_{k=1}^{N} \exp(\text{sim}(x_i, t_k) / \tau)}$$
+        </p>
+        <p>
+          where $\tau$ is a learnable temperature parameter. The image-to-text loss for sample $i$ is the cross-entropy:
+        </p>
+        <p>
+          $$\ell_i^{I \to T} = -\log \, p_{i \to i}$$
+        </p>
+        <p>
+          An analogous text-to-image loss $\ell_i^{T \to I}$ is computed by going the other direction. The total loss averages both:
+        </p>
+        <p>
+          $$\mathcal{L} = \frac{1}{2N} \sum_{i=1}^{N} \left( \ell_i^{I \to T} + \ell_i^{T \to I} \right)$$
+        </p>
+        <p>
+          This objective pushes matching pairs together and non-matching pairs apart in the shared embedding space. With large batch sizes (CLIP used 32,768), there are plenty of negatives per sample, which helps learn fine-grained distinctions.
+        </p>
+      </section>
+
+      <section>
+        <h2>Zero-Shot Classification</h2>
+        <p>
+          The key insight of CLIP is that classification becomes a retrieval problem. To classify an image into one of $C$ classes, you:
+        </p>
+        <ol>
+          <li>Create text prompts for each class, e.g., "a photo of a {class name}".</li>
+          <li>Encode all prompts: $\mathbf{u}_c = f_T(\text{"a photo of a } c \text{"})$ for $c = 1, \ldots, C$.</li>
+          <li>Encode the image: $\mathbf{v} = f_I(x)$.</li>
+          <li>Predict the class with highest similarity:
+            $$\hat{y} = \arg\max_{c} \; \text{sim}(\mathbf{v}, \mathbf{u}_c)$$
+          </li>
+        </ol>
+        <p>
+          No training on the target dataset is needed. CLIP achieves competitive accuracy with fully-supervised baselines on many benchmarks purely through this zero-shot approach. On ImageNet, zero-shot CLIP (ViT-L/14) matches the accuracy of a supervised ResNet-50.
+        </p>
+      </section>
+
+      <section>
+        <h2>Why Does This Matter?</h2>
+        <p>CLIP unlocked several capabilities that were not practical before:</p>
+        <ul>
+          <li><strong>Open-vocabulary recognition:</strong> You can classify images into arbitrary categories just by changing the text prompt &mdash; no retraining needed.</li>
+          <li><strong>Robust representations:</strong> CLIP features are much more robust to distribution shift than ImageNet-trained features, because they were trained on diverse, naturally-occurring internet data.</li>
+          <li><strong>Foundation for downstream tasks:</strong> CLIP's embedding space is the backbone for text-to-image generation (DALL-E, Stable Diffusion), visual question answering, image retrieval, and more.</li>
+          <li><strong>Prompt engineering for vision:</strong> Just as GPT responds to different text prompts, CLIP's predictions change with the prompt template. "A photo of a dog" vs. "A sketch of a dog" can yield different behaviour &mdash; opening up a new way to control vision models.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Prompt Learning with CLIP</h2>
+        <p>
+          Manually writing text prompts is limited. CoOp (Zhou et al., 2022) replaces the hand-crafted prompt with <strong>learnable context vectors</strong>. Instead of "a photo of a [class]", the prompt becomes:
+        </p>
+        <p>
+          $$\mathbf{u}_c = f_T([\mathbf{v}_1][\mathbf{v}_2] \cdots [\mathbf{v}_M][\text{class}_c])$$
+        </p>
+        <p>
+          where $\mathbf{v}_1, \ldots, \mathbf{v}_M$ are learnable token embeddings optimized on a few labelled examples from the target dataset. Only these vectors are updated &mdash; CLIP's encoders stay frozen. This is far more parameter-efficient than fine-tuning the entire model and often outperforms hand-crafted prompts by a significant margin.
+        </p>
+        <p>
+          CoCoOp (Zhou et al., 2022) further extends this by conditioning the prompt on the input image, making the learned prompts generalizable across different visual domains.
+        </p>
+      </section>
+
+      <section>
+        <h2>Limitations</h2>
+        <p>CLIP is not perfect:</p>
+        <ul>
+          <li><strong>Fine-grained tasks:</strong> It struggles with tasks requiring detailed spatial reasoning, like counting objects or understanding relative positions.</li>
+          <li><strong>Compositionality:</strong> "A red car on a blue road" vs. "A blue car on a red road" can confuse CLIP, because the bag-of-words nature of contrastive training does not always capture attribute bindings.</li>
+          <li><strong>Bias:</strong> Trained on internet data, CLIP inherits societal biases present in that data.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>References</h2>
+        <ol class="references">
+          <li>A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal, G. Sastry, A. Askell, P. Mishkin, J. Clark, G. Krueger, I. Sutskever. "Learning Transferable Visual Models From Natural Language Supervision." <em>ICML</em>, 2021.</li>
+          <li>K. Zhou, J. Yang, C. C. Loy, Z. Liu. "Learning to Prompt for Vision-Language Models (CoOp)." <em>IJCV</em>, 130(9):2337&ndash;2348, 2022.</li>
+          <li>K. Zhou, J. Yang, C. C. Loy, Z. Liu. "Conditional Prompt Learning for Vision-Language Models (CoCoOp)." <em>CVPR</em>, 2022.</li>
+          <li>A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, T. Unterthiner, M. Dehghani, M. Minderer, G. Heigold, S. Gelly, J. Uszkoreit, N. Houlsby. "An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale (ViT)." <em>ICLR</em>, 2021.</li>
+          <li>T. Chen, S. Kornblith, M. Norouzi, G. Hinton. "A Simple Framework for Contrastive Learning of Visual Representations (SimCLR)." <em>ICML</em>, 2020.</li>
+        </ol>
+      </section>
+
+    </article>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <hr class="hr">
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-socials">
+        <a href="https://github.com/theredchild/" class="social-icon-btn" target="_blank" rel="noopener" title="GitHub">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+        </a>
+        <a href="https://scholar.google.com/citations?user=4rHw31gAAAAJ&hl=en" class="social-icon-btn" target="_blank" rel="noopener" title="Google Scholar">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 100 14 7 7 0 000-14z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/harshpal/" class="social-icon-btn" target="_blank" rel="noopener" title="LinkedIn">
+          <svg viewBox="0 0 24 24" class="icon-filled"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+        <a href="mailto:palharsh.india@gmail.com" class="social-icon-btn" title="Email">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,7 12,13 2,7"/></svg>
+        </a>
+      </div>
+      <div class="footer-copy">
+        &copy; 2025 Harsh Pal
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.menu-btn').addEventListener('click', function () {
+      var ul = this.closest('nav').querySelector('ul');
+      var mi = this.querySelector('.menu-icon');
+      var ci = this.querySelector('.close-icon');
+      var open = ul.classList.contains('open');
+      ul.classList.toggle('open');
+      ul.classList.toggle('hidden');
+      mi.classList.toggle('hidden');
+      ci.classList.toggle('hidden');
+      this.setAttribute('aria-expanded', open ? 'false' : 'true');
+      this.setAttribute('aria-label', open ? 'Open Menu' : 'Close Menu');
+    });
+  </script>
+</body>
+</html>
